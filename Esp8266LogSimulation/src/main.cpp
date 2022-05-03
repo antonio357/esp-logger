@@ -30,8 +30,8 @@
 
 ESP8266WebServer server;
 uint8_t pin_led = LED_BUILTIN;
-char* ssid = "TP-LINK_FE84";
-char* password = "71656137";
+char* ssid = "wifi-name";
+char* password = "wifi-password";
 
 void toggleLED()
 {
