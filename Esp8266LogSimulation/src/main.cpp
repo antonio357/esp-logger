@@ -19,7 +19,8 @@ void setup() {
   IPAddress myIP = WiFi.softAPIP();
   Serial.printf("AP IP address: "); Serial.println(myIP);
 
-  server.on("/", handleRoot);
+  server.on("/", HTTP_GET, home);
+  server.on("/start", HTTP_POST, start);
   server.begin();
   Serial.println("HTTP server started");
 }
