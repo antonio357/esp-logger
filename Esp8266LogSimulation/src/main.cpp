@@ -11,14 +11,14 @@ void home() {
   server.send(200, "text/plain", "you are connect to esp8266");
 }
 
-void handleBody() { 
-  Serial.println(server.arg("plain"));
-  Serial.println(server.args());
+String getPostBody() { 
+  return server.arg("plain");
 }
 
 void start() {
-  server.send(200, "text/plain", "it will start send logs in 3 s");
-  handleBody();
+  const String body = getPostBody();
+  Serial.println(body);
+  server.send(200, "application/json", body);
 }
 
 
