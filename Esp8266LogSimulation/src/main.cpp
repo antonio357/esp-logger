@@ -1,6 +1,7 @@
 // #include <ESP8266WiFi.h>
 // #include <WiFiClient.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266HTTPClient.h>
 
 const char *ssid = "test";
 const char *password = "password";
@@ -11,15 +12,31 @@ void home() {
   server.send(200, "text/plain", "you are connect to esp8266");
 }
 
-String getPostBody() { 
+String getBody() { 
   return server.arg("plain");
 }
 
 void start() {
-  const String body = getPostBody();
+  const String body = getBody();
   Serial.println(body);
   server.send(200, "application/json", body);
 }
+
+// void sendPost() {
+//   delay(2);
+//   HTTPClient http;    //Declare object of class HTTPClient
+ 
+//   http.begin("http://127.0.0.1:8080/log");      //Specify request destination
+//   http.addHeader("Content-Type", "application/json");  //Specify content-type header
+ 
+//   int httpCode = http.POST("Message from ESP8266");   //Send the request
+//   String payload = http.getString();                  //Get the response payload
+ 
+//   Serial.println(httpCode);   //Print HTTP return code
+//   Serial.println(payload);    //Print request response payload
+ 
+//   http.end();  //Close connection
+// }
 
 
 void setup() {
@@ -31,9 +48,12 @@ void setup() {
   Serial.printf("AP IP address: "); Serial.println(myIP);
 
   server.on("/", HTTP_GET, home);
-  server.on("/start", HTTP_POST, start);
+  server.on("/start", HTTP_PATCH, start);
   server.begin();
   Serial.println("HTTP server started");
 }
 
-void loop() {server.handleClient();}
+void loop() {
+  server.handleClient();
+  // sendPost();
+}
