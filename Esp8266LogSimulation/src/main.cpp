@@ -22,21 +22,22 @@ void start() {
   server.send(200, "application/json", body);
 }
 
-// void sendPost() {
-//   delay(2);
-//   HTTPClient http;    //Declare object of class HTTPClient
+void sendPost() {
+  delay(2000);
+  HTTPClient http;    //Declare object of class HTTPClient
+  WiFiClient wifiClient;
  
-//   http.begin("http://127.0.0.1:8080/log");      //Specify request destination
-//   http.addHeader("Content-Type", "application/json");  //Specify content-type header
+  http.begin(wifiClient, "192.168.4.2", 8080, "/log");      //Specify request destination
+  http.addHeader("Content-Type", "application/json");  //Specify content-type header
  
-//   int httpCode = http.POST("Message from ESP8266");   //Send the request
-//   String payload = http.getString();                  //Get the response payload
+  int httpCode = http.POST("Message from ESP8266");   //Send the request
+  String payload = http.getString();                  //Get the response payload
  
-//   Serial.println(httpCode);   //Print HTTP return code
-//   Serial.println(payload);    //Print request response payload
+  Serial.println(httpCode);   //Print HTTP return code
+  Serial.println(payload);    //Print request response payload
  
-//   http.end();  //Close connection
-// }
+  http.end();  //Close connection
+}
 
 
 void setup() {
@@ -55,5 +56,5 @@ void setup() {
 
 void loop() {
   server.handleClient();
-  // sendPost();
+  sendPost();
 }
