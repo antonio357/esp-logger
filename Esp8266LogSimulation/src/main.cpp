@@ -1,78 +1,44 @@
 #include <ESP8266WiFi.h>
-#include <WebSocketsServer.h>
 
 const char *ssid = "test";
 const char *password = "password";
 
-WebSocketsServer webSocket = WebSocketsServer(81);
+boolean sendLog = false;
 
-// Tratamento de eventos dos dados que vêm do cliente 
-void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght) {
+WiFiServer server(5000);
 
-  switch (type) {
-    case WStype_DISCONNECTED:
-      break;
-
-    case WStype_CONNECTED:
-      { IPAddress ip = webSocket.remoteIP(num);
-        Serial.println(ip);
-      }
-      break;
-
-    case WStype_TEXT:
-      { String text = String((char *) &payload[0]);
-        Serial.println(text);
-        Serial.println(num);
-        Serial.println(type);
-
-        if (text == "ON") {
-          digitalWrite(BUILTIN_LED, LOW);
-        } else {
-          digitalWrite(BUILTIN_LED, HIGH);
-        }
-      }
-      break;
-
-  }
-
-}
-
-void socketReciveCommands() {
-
-}
-
-void socketsendLogs() {
-  
-}
+// definindo sequencia de protocolo
+enum Protocol {
+  SEND_LOG,
+  BUFFER_SIZE // tem que ser o ultimo
+};
 
 void setup() {
+  // serial monitor
   Serial.begin(9600);
+
+  // access point
   Serial.println("Configuring access point…");
+  WiFi.mode(WIFI_AP);
   WiFi.softAP(ssid, password);
-
-  pinMode(BUILTIN_LED, OUTPUT);
-  digitalWrite(BUILTIN_LED, HIGH);
-
+  server.begin();
   Serial.println(WiFi.softAPIP());
-  webSocket.begin();
-  webSocket.onEvent(webSocketEvent);
+
 }
 
 void loop() {
-  // sending data
-  delay(3000);
-  webSocket.sendTXT(0, "digitalRead(BUILTIN_LED)");
+  WiFiClient client = server.available();
+  if (client) {     
+    //Se o cliente tem dados que deseja nos enviar
+    while (client.connected()) {//Criamos um buffer para colocar os dados
+      while (client.available() > 0)
+      {
+        uint8_t value = client.read();
+        Serial.write(value);
+      }
+      delay(10);
+    }
+    //Fecha a conexão com o cliente
+    client.stop();
+  }
 }
-
-// node code remove this later
-// Coloque aqui o IP obtino no ESP8266
-// let con = WebSocket.server('ws://192.168.4.1:81/', ['arduino']);
-let ws = new WebSocket("ws://192.168.4.1:81/");
-
-ws.onopen = function (event) {
-  ws.send("node client found");
-};
-
-ws.onmessage = function (evt) { 
-  console.log("esp send ", evt.data);
-};
