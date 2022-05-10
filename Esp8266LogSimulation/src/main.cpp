@@ -23,12 +23,12 @@ void start() {
 }
 
 void sendPost() {
-  delay(2000);
+  delay(4000);
   HTTPClient http;    //Declare object of class HTTPClient
   WiFiClient wifiClient;
  
   http.begin(wifiClient, "192.168.4.2", 8080, "/log");      //Specify request destination
-  http.addHeader("Content-Type", "application/json");  //Specify content-type header
+  http.addHeader("Content-Type", "text/plain");  //Specify content-type header
  
   int httpCode = http.POST("Message from ESP8266");   //Send the request
   String payload = http.getString();                  //Get the response payload
