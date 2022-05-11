@@ -1,29 +1,29 @@
 #include <ESP8266WiFi.h>
 
-const char *ssid = "test";
-const char *password = "password";
-
-boolean sendLog = false;
-
 WiFiServer server(5000);
 
-// definindo sequencia de protocolo
-enum Protocol {
-  SEND_LOG,
-  BUFFER_SIZE // tem que ser o ultimo
-};
+void configSerialMonitor(int num=9600) {
+   Serial.begin(num);
+   delay(1000);
+   Serial.println("Monitor working");
+}
+
+void connectToRouter(const char *ssid, const char *password) {
+  Serial.print("Conecting to router");
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+     delay(500);
+     Serial.print(" .");
+  }
+  Serial.println("\nConected");
+  Serial.print("IP: ");
+  Serial.println(WiFi.localIP());
+}
 
 void setup() {
-  // serial monitor
-  Serial.begin(9600);
-
-  // access point
-  Serial.println("Configuring access point…");
-  WiFi.mode(WIFI_AP);
-  WiFi.softAP(ssid, password);
+  configSerialMonitor();
+  connectToRouter("TP-LINK_FE84", "71656137");
   server.begin();
-  Serial.println(WiFi.softAPIP());
-
 }
 
 void loop() {
