@@ -26,19 +26,31 @@ void setup() {
   server.begin();
 }
 
+int counter = 0;
+
 void loop() {
   WiFiClient client = server.available();
-  if (client) {     
-    //Se o cliente tem dados que deseja nos enviar
-    while (client.connected()) {//Criamos um buffer para colocar os dados
-      while (client.available() > 0)
-      {
-        uint8_t value = client.read();
-        Serial.write(value);
-      }
-      delay(10);
+  // while (client && client.connected() && client.available() > 0) {     
+  //   client.println("counter " + counter++);
+  //   client.stop();
+  //   delay(500);
+  //   Serial.println("sent data");
+  // }
+  if (client) {
+    Serial.println("has client");
+    while (client.connected()) {
+      Serial.println("client connected");
+      // client.println("counter " + counter++);
+      client.write("this is a log");
+      // delay(500);
+      Serial.println("sent data");
+      // while (client.available() > 0) {
+      //   Serial.println("client avaliable");
+      //   client.println("counter " + counter++);
+      //   client.stop();
+      //   delay(500);
+      //   Serial.println("sent data");
+      // }
     }
-    //Fecha a conexão com o cliente
-    client.stop();
   }
 }
