@@ -27,30 +27,13 @@ void setup() {
 }
 
 int counter = 0;
-
+// https://www.youtube.com/watch?v=H6qpSjj3HgE&ab_channel=ElectricalMagic
 void loop() {
   WiFiClient client = server.available();
-  // while (client && client.connected() && client.available() > 0) {     
-  //   client.println("counter " + counter++);
-  //   client.stop();
-  //   delay(500);
-  //   Serial.println("sent data");
-  // }
-  if (client) {
-    Serial.println("has client");
-    while (client.connected()) {
-      Serial.println("client connected");
-      // client.println("counter " + counter++);
-      client.write("this is a log");
-      // delay(500);
-      Serial.println("sent data");
-      // while (client.available() > 0) {
-      //   Serial.println("client avaliable");
-      //   client.println("counter " + counter++);
-      //   client.stop();
-      //   delay(500);
-      //   Serial.println("sent data");
-      // }
-    }
+
+  while (client && client.connected()) {
+    Serial.println("client connected");
+    client.write("this is a log");
+    Serial.println("sent data");
   }
 }
