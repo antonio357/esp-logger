@@ -39,11 +39,15 @@ void setup() {
 int counter = 0;
 void loop() {
   webSocket.loop();
-  const char msg[] = "0123456776543210";
+  const char msg[] = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
   if (webSocket.connectedClients()) {
     webSocket.broadcastTXT(msg, strlen(msg));
-    Serial.print("sent msg num ");
-    Serial.println(counter++);
-  } else counter = 0;
-  // delay(1000);
+    counter++;
+  } else if (counter > 0) {
+    Serial.print("sent msgs: ");
+    Serial.print(counter);
+    Serial.print(" len: ");
+    Serial.println(strlen(msg));
+    counter = 0;
+  } 
 }
