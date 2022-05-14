@@ -36,6 +36,7 @@ void setup() {
   webSocket.onEvent(receiveMsg);
 }
 
+// https://github.com/datasith/Ai_Demos_ESP32/tree/master/two_board_comm
 int counter = 0;
 void loop() {
   webSocket.loop();
