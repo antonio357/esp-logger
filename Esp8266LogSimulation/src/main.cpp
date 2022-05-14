@@ -45,5 +45,5 @@ void loop() {
     Serial.print("sent msg num ");
     Serial.println(counter++);
   } else counter = 0;
-  delay(1000);
+  // delay(1000);
 }
