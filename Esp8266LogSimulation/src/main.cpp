@@ -25,26 +25,13 @@ void connectToRouter(const char *ssid, const char *password) {
 
 void receiveMsg(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {  
   // make soure any operation is made if (type == WStype_TEXT) the type is correct
-  if(type == WStype_TEXT) {
+  if (type == WStype_TEXT) {
     char payloadString[strlen((char*)(payload))];
+    
     strcpy(payloadString, (char*)(payload));
-    const char* start = "start logs";
-    const char* stop = "stop logs";
-    Serial.print("payloadString = ");
-    Serial.println(payloadString);
-    Serial.println(strcmp(payloadString, start) == 0);
-    boolean startB = strcmp(payloadString, start) == 0;
-    boolean stopB = strcmp(payloadString, stop) == 0;
-    Serial.println("startB = " + startB);
-    Serial.println("stopB = " + stopB);
-    if (startB) { // o bug ta na camparacao dentro do if (strcmp(payloadString, start) == 0)
-      send_log = true;
-      Serial.println(start);
-    }
-    else if (stopB) {
-      send_log = false;
-      Serial.println(stop);
-    }
+    if (strcmp(payloadString, "start logs") == 0) send_log = true;
+    else if (strcmp(payloadString, "stop logs") == 0) send_log = false;
+
     Serial.printf("received: payload [%u]: %s\n", num, payload);
   }
 }
