@@ -13,6 +13,13 @@ void configSerialMonitor(int num=9600) {
 
 void connectToRouter(const char *ssid, const char *password) {
   Serial.print("Conecting to router");
+
+  // https://www.youtube.com/watch?v=B9jJI7p2Gw4&ab_channel=MishMashLabs, setando ip fixo
+  IPAddress local_IP(192, 168, 1, 199);
+  IPAddress gateway(192, 168, 1, 1);
+  IPAddress subnet(255, 255, 0, 0);
+  if (!WiFi.config(local_IP, gateway, subnet)) Serial.println("STA Failed to configure");
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
      delay(500);
