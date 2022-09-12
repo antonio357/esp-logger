@@ -38,11 +38,33 @@ void connectToRouter(const char *ssid, const char *password) {
 
 void receiveMsg(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {  
   switch (type) {                                     // switch on the type of information sent
+    // case WStype_ERROR:
+    //   break;
+    // case WStype_BIN:
+    //   break;
+    // case WStype_FRAGMENT_TEXT_START:
+    //   break;
+    // case WStype_FRAGMENT_BIN_START:
+    //   break;
+    // case WStype_FRAGMENT:
+    //   break;
+    // case WStype_FRAGMENT_FIN:
+    //   break;
+    case WStype_PING:
+      Serial.println("Client " + String(num) + " pinged");
+      break;
+    case WStype_PONG:
+      Serial.println("Client " + String(num) + " ponged");
+      break;
     case WStype_DISCONNECTED:                         // if a client is disconnected, then type == WStype_DISCONNECTED
       Serial.println("Client " + String(num) + " disconnected");
       break;
     case WStype_CONNECTED:                            // if a client is connected, then type == WStype_CONNECTED
       Serial.println("Client " + String(num) + " connected");
+      Serial.println("Server has " + String(webSocket.connectedClients()) + " clients connected");
+      Serial.println("Server has " + webSocket.remoteIP(num).toString() + " clients connected");
+      // webSocket.enableHeartbeat();
+      // webSocket.enableHeartbeat(webSocket.connectedClients());
       break;
     case WStype_TEXT:                                 // if a client has sent data, then type == WStype_TEXT
       char payloadString[strlen((char*)(payload))];
@@ -51,7 +73,7 @@ void receiveMsg(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
       if (strcmp(payloadString, "start logs") == 0) send_log = true;
       else if (strcmp(payloadString, "stop logs") == 0) send_log = false;
 
-      Serial.printf("received: payload [%u]: %s\n", num, payload);
+      Serial.printf("received: payload [%u]: %s\n", num, payloadString);
       // try to decipher the JSON string received
       // DeserializationError error = deserializeJson(doc_rx, payload);
       // if (error) {
@@ -82,6 +104,7 @@ void setup() {
 
   webSocket.begin();
   webSocket.onEvent(receiveMsg);
+  // webSocket.enableHeartbeat(5000, 3000, -1);
 }
 
 // https://github.com/datasith/Ai_Demos_ESP32/tree/master/two_board_comm
