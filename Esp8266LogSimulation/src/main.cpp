@@ -72,6 +72,8 @@ void receiveMsg(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
       strcpy(payloadString, (char*)(payload));
       if (strcmp(payloadString, "start logs") == 0) send_log = true;
       else if (strcmp(payloadString, "stop logs") == 0) send_log = false;
+      // connection confirmation
+      else if (strcmp(payloadString, "ping") == 0) webSocket.sendTXT(num, "pong");
 
       Serial.printf("received: payload [%u]: %s\n", num, payloadString);
       // try to decipher the JSON string received
