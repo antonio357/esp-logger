@@ -74,6 +74,12 @@ void receiveMsg(uint8_t num, WStype_t type, uint8_t* payload, size_t length) {
       else if (strcmp(payloadString, "stop logs") == 0) send_log = false;
       // connection confirmation
       else if (strcmp(payloadString, "ping") == 0) webSocket.sendTXT(num, "pong");
+      // get connected ports
+      else if (strcmp(payloadString, "ports") == 0) {
+        // manda as portas que tem senor conectado
+        webSocket.sendTXT(num, "{\"connectedPorts\":[\"port1\",\"port2\"]}"); // caso de um sensor de toque e outro de ultrasónico
+        // webSocket.sendTXT(num, "{\"connectedPorts\":[]}"); // caso não tenha senosres conectados
+      }
 
       Serial.printf("received: payload [%u]: %s\n", num, payloadString);
       // try to decipher the JSON string received
@@ -123,6 +129,7 @@ void loop() {
     serializeJson(doc_tx, jsonString);                // convert JSON object to string
     webSocket.broadcastTXT(jsonString);               // send JSON string to clients
     counter++;
+    delay(100);
   } else if (counter > 0) {
     Serial.print("sent msgs: ");
     Serial.print(counter);
