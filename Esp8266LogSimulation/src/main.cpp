@@ -123,6 +123,7 @@ void loop() {
     serializeJson(doc_tx, jsonString);                // convert JSON object to string
     webSocket.broadcastTXT(jsonString);               // send JSON string to clients
     counter++;
+    delay(300);
   } else if (counter > 0) {
     Serial.print("sent msgs: ");
     Serial.print(counter);
