@@ -7,6 +7,7 @@
 StaticJsonDocument<200> doc_logs; // provision memory for about 200 characters
 StaticJsonDocument<200> doc_log;
 StaticJsonDocument<200> doc_rx;
+StaticJsonDocument<200> doc_received_payload;
 // json help in https://arduinojson.org/v5/assistant/
 
 boolean send_log = false;
@@ -92,6 +93,32 @@ void receiveMsg(uint8_t num, WStype_t type, uint8_t *payload, size_t length)
       webSocket.sendTXT(num, "{\"connectedPorts\":[\"port1\",\"port2\"]}"); // caso de um sensor de toque e outro de ultrasónico
       // webSocket.sendTXT(num, "{\"connectedPorts\":[]}"); // caso não tenha senosres conectados
     }
+    else
+    {
+      // try to decipher the JSON string received
+      DeserializationError error = deserializeJson(doc_received_payload, payloadString);
+      if (error)
+      {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.f_str());
+        break;
+      }
+      else
+      {
+        // JSON string was received correctly, so information can be retrieved:
+        const char *cmd = doc_received_payload["cmd"];
+        Serial.println("Received json from wsClient: " + String(num));
+        Serial.println("cmd: " + String(cmd));
+        if (strcmp(cmd, "port config") == 0)
+        {
+          const char *portName = doc_received_payload["portName"];
+          const char *sensorType = doc_received_payload["sensorType"];
+          Serial.println("portName: " + String(portName));
+          Serial.println("sensorType: " + String(sensorType));
+        }
+        Serial.println("");
+      }
+    }
 
     Serial.printf("received: payload [%u]: %s\n", num, payloadString);
     // try to decipher the JSON string received
@@ -140,7 +167,7 @@ void loop()
     String logs = "{\"logs\": [{\"port1\": " + String(random(100)) + ", \"port2\": " + String(random(1)) + "}]}";
     webSocket.broadcastTXT(logs);
     counter++;
-    delay(500);
+    delay(300);
   }
   else if (counter > 0)
   {
