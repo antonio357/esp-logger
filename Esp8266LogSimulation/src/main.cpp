@@ -164,15 +164,15 @@ void loop()
   if (send_log && webSocket.connectedClients())
   {
     // webSocket.broadcastTXT(msg, strlen(msg));
-    String logs = "{\"logs\": [{\"port1\": " + String(random(100)) + ", \"port2\": " + String(random(1)) + "}]}";
+    String logs = "{\"logs\":{\"port1\":[{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}],\"port2\":[{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}]}}";
     webSocket.broadcastTXT(logs);
     counter++;
-    delay(300);
+    delay(20);
   }
   else if (counter > 0)
   {
     Serial.print("sent msgs: ");
-    Serial.print(counter);
+    Serial.print(counter * 6);
     Serial.print(" len: ");
     Serial.println(strlen(msg));
     counter = 0;
