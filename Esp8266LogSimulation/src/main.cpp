@@ -156,7 +156,8 @@ void setup()
 }
 
 // https://github.com/datasith/Ai_Demos_ESP32/tree/master/two_board_comm
-int counter = 0;
+int counterpacketsSentContinusly = 0;
+int logTimerSimulator = 0;
 void loop()
 {
   webSocket.loop();
@@ -168,25 +169,30 @@ void loop()
     // String logs = "{\"logs\":{\"port1\":[{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}],\"port2\":[{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}]}}";
     String logs = "{\"logs\":{\"port1\":[";
     for (int i = 0; i < bufferDelay; i++) {
-      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}");
-      else logs.concat("{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},");
+      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "}");
+      else logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "},");
+      logTimerSimulator++;
     }
+    logTimerSimulator -= bufferDelay;
     logs.concat("],\"port2\":[");
     for (int i = 0; i < bufferDelay; i++) {
-      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}");
-      else logs.concat("{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},");
+      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "}");
+      else logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "},");
+      logTimerSimulator++;
     }
     logs.concat("]}}");
     webSocket.broadcastTXT(logs);
-    counter++;
+    counterpacketsSentContinusly++;
     delay(bufferDelay);
   }
-  else if (counter > 0)
+  else if (counterpacketsSentContinusly > 0)
   {
     Serial.print("sent msgs: ");
-    Serial.print(counter * bufferDelay * 2);
+    Serial.print(counterpacketsSentContinusly * bufferDelay * 2);
     Serial.print(" len: ");
     Serial.println(strlen(msg));
-    counter = 0;
+    counterpacketsSentContinusly = 0;
+    logTimerSimulator = 0;
+    // enviar packet de encerramento
   }
 }
