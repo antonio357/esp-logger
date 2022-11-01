@@ -161,23 +161,21 @@ int logTimerSimulator = 0;
 void loop()
 {
   webSocket.loop();
-  const char msg[] = "cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc";
   int bufferDelay = 20;
   if (send_log && webSocket.connectedClients())
   {
-    // webSocket.broadcastTXT(msg, strlen(msg));
     // String logs = "{\"logs\":{\"port1\":[{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}],\"port2\":[{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"},{\"value\":" + String(random(255)) + ",\"time\":\"hh:mm:ss:llll\"}]}}";
     String logs = "{\"logs\":{\"port1\":[";
     for (int i = 0; i < bufferDelay; i++) {
-      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "}");
-      else logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "},");
+      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(50) + ",\"time\":" + String(logTimerSimulator) + "}");
+      else logs.concat("{\"value\":" + String(50) + ",\"time\":" + String(logTimerSimulator) + "},");
       logTimerSimulator++;
     }
     logTimerSimulator -= bufferDelay;
     logs.concat("],\"port2\":[");
     for (int i = 0; i < bufferDelay; i++) {
-      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "}");
-      else logs.concat("{\"value\":" + String(random(255)) + ",\"time\":" + String(logTimerSimulator) + "},");
+      if (i == bufferDelay - 1) logs.concat("{\"value\":" + String(50) + ",\"time\":" + String(logTimerSimulator) + "}");
+      else logs.concat("{\"value\":" + String(50) + ",\"time\":" + String(logTimerSimulator) + "},");
       logTimerSimulator++;
     }
     logs.concat("]}}");
@@ -188,9 +186,7 @@ void loop()
   else if (counterpacketsSentContinusly > 0)
   {
     Serial.print("sent msgs: ");
-    Serial.print(counterpacketsSentContinusly * bufferDelay * 2);
-    Serial.print(" len: ");
-    Serial.println(strlen(msg));
+    Serial.println(counterpacketsSentContinusly * bufferDelay * 2);
     counterpacketsSentContinusly = 0;
     logTimerSimulator = 0;
     // enviar packet de encerramento
